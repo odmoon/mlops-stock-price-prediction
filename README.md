@@ -1,11 +1,11 @@
-mlops_stock_price_prediction
+MLOPS solution for stock price prediction model 
 ==============================
 
 ## Project overview
 This project aims to develop a stock model prediction system that 
 leverages Machine Learning (ML) to accurately predict stock prices. 
-The core of this project is built on Python and utilizes ML model 
-to analyze historical stock data and predict future trends. 
+The core of this project is built on Python and utilizes ML model to 
+analyze historical stock data and predict future trends. 
 This project is enhanced with a complete MLOps solution for 
 development, deployment, and monitoring of the ML models.
 
