@@ -1,5 +1,8 @@
 MLOPS solution for stock price prediction model 
 ==============================
+## Section 1 Project Proposal
+
+## 1.1 Project scope and objectives
 
 ## Project overview
 This project aims to develop a stock model prediction system that 
@@ -74,3 +77,32 @@ Project Organization
 
 
 --------
+
+## 1.2 Selection of Data and 1.4 Open-Source Tools
+
+The dataset we chose is from Kaggle, here is the link: 
+https://www.kaggle.com/datasets/svaningelgem/nyse-100-daily-stock-prices
+
+The reason we chose this dataset to approach our objective of developing a model to predict stock prices accurately is it contains data from the Top 100 stocks in the market on the NYSE from January 1962-May 2024. With over 62 years of data, and the simple language involved in the dataset, we knew we could utilize this to develop our model. The dataset itself contains 100 csv files of different stocks, each file containing the date, and OHLC. OHLC refers to open, high, low and close which refers to the price at which transactions are completed, the highest and lowest transaction prices, and the final transaction price.
+
+The preprocessing steps required to make it usable for our project are... (write more)
+
+
+## 1.3 Model Considerations
+
+The model architectures that are appropriate for our dataset that we are considering are LSTM (long short-term memory), ARIMA, and RNN (recurrent neural networks). This is because stock predictions require time-series prediction models... (Write more once decided which model)
+
+
+## Members of Group Project and Roles
+## Odonchimeg Bold
+    - Setup repository on GitHub with cookiecutter template
+    - wrote up the project scope and objective in README.md
+    set up the environment as well with cookiecutter template to provide requirements.txt and respective python files
+    - (Write more..)
+## Maheen Khan
+    - Added sections 1.2-1.4 to the README.md where the selection of dataset is justified and possible model considerations
+    - Wrote up team members roles in README.md
+    - (Write more..)
+## Dylan Neal
+    - Helped look for datasets and is working on the source code for algorithms for possible model architectures
+    - (Write more..)
