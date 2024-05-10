@@ -12,7 +12,7 @@ analyze historical stock data and predict future trends.
 This project is enhanced with a complete MLOps solution for 
 development, deployment, and monitoring of the ML models.
 
-## Features 
+## Scope
 
 * Data Processing: Automated scripts to fetch, clean, and prepare historical stock data for training.
 * Model Training: Implementation of multiple ML models to evaluate their performance on stock price prediction.
@@ -24,22 +24,19 @@ development, deployment, and monitoring of the ML models.
 ## Technology Stack
 
 Python: Primary programming language for model development and scripting.
-NumPy: For data manipulation and numerical processing.
+NumPy/Panda: For data manipulation and numerical processing.
 and others 
+Tensorflow: Framework for machine learning in predictive analysis
 
 Project Organization
 ------------
 
     ├── LICENSE
-    ├── Makefile           <- Makefile with commands like `make data` or `make train`
+    ├── Makefile           <- Makefile with commands like `make data` or `make train` /future task/
     ├── README.md          <- The top-level README for developers using this project.
-    ├── data
-    │   ├── external       <- Data from third party sources.
-    │   ├── interim        <- Intermediate data that has been transformed.
+    ├── data /will be used in future, for now static csv file is loaded from src/data/stock_data
     │   ├── processed      <- The final, canonical data sets for modeling.
     │   └── raw            <- The original, immutable data dump.
-    │
-    ├── docs               <- A default Sphinx project; see sphinx-doc.org for details
     │
     ├── models             <- Trained and serialized models, model predictions, or model summaries
     │
@@ -60,20 +57,15 @@ Project Organization
     │   ├── __init__.py    <- Makes src a Python module
     │   │
     │   ├── data           <- Scripts to download or generate data
-    │   │   └── make_dataset.py
-    │   │
-    │   ├── features       <- Scripts to turn raw data into features for modeling
-    │   │   └── build_features.py
+    │   │   └── stock_data
     │   │
     │   ├── models         <- Scripts to train models and then use trained models to make
     │   │   │                 predictions
-    │   │   ├── predict_model.py
-    │   │   └── train_model.py
+    │   │   └── ABBV_StockPrediction1.py
     │   │
     │   └── visualization  <- Scripts to create exploratory and results oriented visualizations
     │       └── visualize.py
-    │
-    └── tox.ini            <- tox file with settings for running tox; see tox.readthedocs.io
+    └── 
 
 
 --------
