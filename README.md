@@ -21,12 +21,45 @@ development, deployment, and monitoring of the ML models.
 * Continuous Integration and Continuous Deployment (CI/CD): CI/CD pipelines to automate the testing and deployment processes.
 * Monitoring: Tools to monitor the model's performance in production and trigger retraining if necessary.
 
-## Technology Stack
+## Prerequisites
 
-Python: Primary programming language for model development and scripting.
-NumPy/Panda: For data manipulation and numerical processing.
-and others 
-Tensorflow: Framework for machine learning in predictive analysis
+To run this project, you'll need:
+- Python 3.8+
+- pip (Python package manager)
+
+## Environment Setup
+
+Follow these steps to set up your environment and run the project:
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/odmoon/mlops-stock-price-prediction.git
+cd mlops-stock-price-prediction
+```
+### 2. Create and activate a Virtual Environment 
+* Unix or MacOS:
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+* Windows: 
+```bash
+python -m venv venv
+.\venv\Scripts\activate
+```
+### 3. Install dependencies
+```bash
+pip install -r requirements.txt 
+``` 
+or manually install following: 
+```bash
+pip install pandas numpy matplotlib scikit-learn tensorflow
+```
+### 4. Running the code 
+```bash
+python src/models/ABBV_StockPrediction1.py
+```
 
 Project Organization
 ------------
@@ -121,7 +154,7 @@ Exploration for other predictive methods outside of our current dataset. Possibl
 ## Members of Group Project and Roles
 ## Odonchimeg Bold
     - Setup repository on GitHub with cookiecutter template
-    - wrote up the project scope and objective in README.md
+    - wrote up the project scope, instructions of environment setup and dependencies in README.md
     set up the environment as well with cookiecutter template to provide requirements.txt and respective python files
     - Wrote up report summarizing findings, challenges encountered, and areas for improvement with team.
 
