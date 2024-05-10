@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -11,10 +12,13 @@ from tensorflow.keras.callbacks import EarlyStopping
 
 # * Data is in the form of a CSV file * 
 
+# Set up the relative path to the file
+data_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'stock_data', 'ABBV.csv')
+
+full_path = os.path.normpath(data_path) 
 
 # Load the dataset
-data_path = '/Users/dylanneal/Documents/Assignment1/mlops-stock-price-prediction/src/data/stock_data/ABBV.csv'
-abbv_data = pd.read_csv(data_path)
+abbv_data = pd.read_csv(full_path)
 
 
 # * The 'date' column is converted to datetime format and set as the DataFrame index *
