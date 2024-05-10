@@ -92,10 +92,30 @@ The preprocessing steps required to make it usable for our project are... (write
 
 The model architectures that are appropriate for our dataset that we are considering are LSTM (long short-term memory), ARIMA, and RNN (recurrent neural networks). This is because stock predictions require time-series prediction models... (Write more once decided which model)
 
+Here are the steps that we followed in relation to our data set. 
+    1. The data is loaded into the program
+    2. We Convert the date column into date time and set it as a pandas DataFrame index 
+    3. We Choose the features from the dataset for model input 
+    4. We Scale the feature from 0 to 1 
+    5. We Define 'look_back' which looks at past data to inform itself for future predictions
+    6. The create_dataset builds I/O datasets for the NN. 
+    7. The dataset is split into training and testing data at 67% for training and 33% for testing
+    8. Two LTSM Layers are defined: Dropout and Dense; prevents overfitting
+    9. Set up Early Stopping, which halts validation if model does not improve. 
+    10. The Model trains (fits) itself on the dataset
+    11. Training and Testing both make predictions 
+    12. The predictions revert to the original scale
+    13. The RSME is calculated
+    14. The date information is indexed
+    15. The Model is plotted. 
+
+
 ## Report for findings, challenges, and areas for improvement
 
 ## Findings
-We tested the model with ABBV stock and it showed a downward trend for future predictions, so we know we are missing some piece. 
+We found that the model was able to predict very well in terms of data that it already knew, but was not confident with future, unknown, data. When attempting to predict the stock price one month past the dataset, it created a consistent downward vector that did not appear to be indicative of the stock's future value. We attribute this to the fact that the model may be overfitted and is not confident in predicting data that is foreign to what it already knows. 
+As such, we are looking into other feature sets and possibilities to integrate into the model past pricing information like 'open' and 'high'. We believe that integrating sentiment analysis from news sources and social media, as well as larger economic indicators surrounding the stock, would be effective measures to train the model on as well in order to make accurate predictions. 
+
 
 ## Challenges
 A challenge we had is finding a dataset we could understand in layman's terms that would be useful to predict. Even with finance in mind, datasets for stocks and cryptocurrency were either outdated or over complicated or too big or too small.
@@ -121,3 +141,14 @@ Exploration for other predictive methods outside of our current dataset. Possibl
     - Proposed a preliminary long short-term memory model and wrote up the data documentation and training steps.
     - Converted jupyter notebook to source code for repo for submission
     - Wrote up report summarizing findings, challenges encountered, and areas for improvement with team.
+
+
+
+## Sources Used 
+
+https://www.datacamp.com/tutorial/lstm-python-stock-market
+
+https://www.youtube.com/watch?si=4OR6BJm8pIQzUgHZ&v=YCzL96nL7j0&feature=youtu.be
+
+ChatGPT 
+GitHub Copilot
