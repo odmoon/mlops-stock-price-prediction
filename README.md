@@ -92,17 +92,32 @@ The preprocessing steps required to make it usable for our project are... (write
 
 The model architectures that are appropriate for our dataset that we are considering are LSTM (long short-term memory), ARIMA, and RNN (recurrent neural networks). This is because stock predictions require time-series prediction models... (Write more once decided which model)
 
+## Report for findings, challenges, and areas for improvement
+
+## Findings
+We tested the model with ABBV stock and it showed a downward trend for future predictions, so we know we are missing some piece. 
+
+## Challenges
+A challenge we had is finding a dataset we could understand in layman's terms that would be useful to predict. Even with finance in mind, datasets for stocks and cryptocurrency were either outdated or over complicated or too big or too small.
+
+The main challenge we are encountering is prediction past the dataset. We can only seem to train model for the current dataset but its failing to do the prediction for the future stocks as it is showing a downward trend which is not realistic. Our model is over fitted for the dataset, so it is too reliant on the data and is not confident in predicting the data.
+
+## Areas for Improvement
+Exploration for other predictive methods outside of our current dataset. Possibly integration of other datasets would show us a more clearer path to where the error lies. We want to focus on one part of the dataset to make sure the model is running correctly before implementing with over 100 files of data. 
+
 
 ## Members of Group Project and Roles
 ## Odonchimeg Bold
     - Setup repository on GitHub with cookiecutter template
     - wrote up the project scope and objective in README.md
     set up the environment as well with cookiecutter template to provide requirements.txt and respective python files
-    - (Write more..)
+    - Wrote up report summarizing findings, challenges encountered, and areas for improvement with team.
+
 ## Maheen Khan
     - Added sections 1.2-1.4 to the README.md where the selection of dataset is justified and possible model considerations
     - Wrote up team members roles in README.md
-    - (Write more..)
+    - Wrote up report summarizing findings, challenges encountered, and areas for improvement with team.
 ## Dylan Neal
-    - Helped look for datasets and is working on the source code for algorithms for possible model architectures
-    - (Write more..)
+    - Proposed a preliminary long short-term memory model and wrote up the data documentation and training steps.
+    - Converted jupyter notebook to source code for repo for submission
+    - Wrote up report summarizing findings, challenges encountered, and areas for improvement with team.
