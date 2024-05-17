@@ -10,6 +10,13 @@ from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.callbacks import EarlyStopping
 
 
+import wandb
+wandb.init(project='MLOPS-STOCK-PRICE-PREDICTION')
+# 2. Save model inputs and hyperparameters
+config = wandb.config
+config.learning_rate = 0.01
+
+
 # * Data is in the form of a CSV file * 
 
 # Set up the relative path to the file
@@ -119,7 +126,9 @@ early_stopping = EarlyStopping(monitor='val_loss', patience=10, restore_best_wei
 # Fit the model
 history = model.fit(trainX, trainY, validation_split=0.2, epochs=100, batch_size=10, verbose=2, callbacks=[early_stopping])
 
-
+# Extract loss values from history and log them into wandb
+for i in range(len(history.history['loss'])):
+    wandb.log({"epoch": i + 1, "loss": history.history['loss'][i], "val_loss": history.history['val_loss'][i]})
 # * Predictions are made for both training and testing datasets *
 
 # Making predictions
@@ -164,6 +173,4 @@ plt.ylabel('Stock Price')
 plt.legend()
 plt.xticks(rotation=45)  # Rotate date labels for better visibility
 plt.show()
-
-
 
