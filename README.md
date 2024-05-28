@@ -60,6 +60,17 @@ pip install pandas numpy matplotlib scikit-learn tensorflow
 ```bash
 python src/models/ABBV_StockPrediction1.py
 ```
+### 5. Docker Instructions
+- Download and Install docker from (https://docs.docker.com/get-docker/)
+
+```bash
+### Building the Docker Image  
+docker build -t mlops-stock-price-prediction .
+```
+```bash
+### Running the Docker Container
+docker run -it --rm mlops-stock-price-prediction
+```
 
 Project Organization
 ------------
