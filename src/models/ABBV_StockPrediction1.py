@@ -11,22 +11,32 @@ from tensorflow.keras.callbacks import EarlyStopping
 
 
 import wandb
+import sys
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
+from src.models.logging.config import logger 
+
+# Initialize Weights and Biases
 wandb.init(project='MLOPS-STOCK-PRICE-PREDICTION')
-# 2. Save model inputs and hyperparameters
+
 config = wandb.config
 config.learning_rate = 0.01
 
+logger.info("Weights and Biases initialized")
+
+# Set up the relative path to the file
+data_path = os.path.join(os.path.dirname(__file__), '..', '..', 'src', 'data', 'stock_data', 'ABBV.csv')
+full_path = os.path.normpath(data_path)
 
 # * Data is in the form of a CSV file * 
 
-# Set up the relative path to the file
-data_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'stock_data', 'ABBV.csv')
-
-full_path = os.path.normpath(data_path) 
-
 # Load the dataset
+logger.info("Loading dataset")
 abbv_data = pd.read_csv(full_path)
 
+# Check if the data file exists
+if not os.path.exists(full_path):
+    logger.error("Data file not found: %s", full_path)
+    sys.exit("Data file not found")
 
 # * The 'date' column is converted to datetime format and set as the DataFrame index *
 
@@ -69,7 +79,7 @@ def create_dataset(dataset, look_back=60):
         
     return np.array(X), np.array(Y)
 
-
+logger.info("Creating dataset")
 # Create dataset
 X, y = create_dataset(data_scaled)
 
@@ -82,7 +92,7 @@ test_size = len(X) - train_size
 trainX, testX = X[:train_size], X[train_size:]
 trainY, testY = y[:train_size], y[train_size:]
 
-
+logger.info("Data split into training and testing sets")
 
 # Model Architecture: The model consists of two LSTM layers
 # interspersed with Dropoutlayers to prevent overfitting,
@@ -91,6 +101,7 @@ trainY, testY = y[:train_size], y[train_size:]
 # The model is compiled with the mean squared error loss function and the adam optimizer.
 
 # Create and compile the LSTM model
+logger.info("Creating and compiling the LSTM model")
 model = Sequential([
     Input(shape=(trainX.shape[1], 4)),
     
@@ -124,14 +135,17 @@ early_stopping = EarlyStopping(monitor='val_loss', patience=10, restore_best_wei
 
 
 # Fit the model
+logger.info("Training the model")
 history = model.fit(trainX, trainY, validation_split=0.2, epochs=100, batch_size=10, verbose=2, callbacks=[early_stopping])
+
 
 # Extract loss values from history and log them into wandb
 for i in range(len(history.history['loss'])):
     wandb.log({"epoch": i + 1, "loss": history.history['loss'][i], "val_loss": history.history['val_loss'][i]})
-# * Predictions are made for both training and testing datasets *
+    logger.info("Epoch %d: loss=%f, val_loss=%f", i + 1, history.history['loss'][i], history.history['val_loss'][i])
 
 # Making predictions
+logger.info("Making predictions")
 trainPredict = model.predict(trainX)
 testPredict = model.predict(testX)
 
@@ -149,12 +163,15 @@ testY_original = scaler.inverse_transform(np.c_[testY, np.zeros((len(testY), 3))
 # The Root Mean Squared Error (RMSE) is calculated for both training and testing
 # predictions to evaluate the performance of the model.
 
+# The Root Mean Squared Error (RMSE) is calculated for both training and testing
+# predictions to evaluate the performance of the model.
+
 # Calculate root mean squared error
 trainScore = np.sqrt(mean_squared_error(trainY_original, trainPredict))
 testScore = np.sqrt(mean_squared_error(testY_original, testPredict))
 print('Train Score: %.2f RMSE' % trainScore)
 print('Test Score: %.2f RMSE' % testScore)
-
+wandb.log({"train_rmse": trainScore, "test_rmse": testScore})
 
 # Extract date index for plotting
 dates = abbv_data.index[look_back+1:look_back+1+len(trainY_original)+len(testY_original)]
@@ -173,4 +190,5 @@ plt.ylabel('Stock Price')
 plt.legend()
 plt.xticks(rotation=45)  # Rotate date labels for better visibility
 plt.show()
+
 

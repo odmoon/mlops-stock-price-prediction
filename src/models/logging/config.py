@@ -2,11 +2,9 @@ import logging
 from logging.config import dictConfig
 import sys
 from pathlib import Path
-import config
 from rich.logging import RichHandler
 
-
-BASE_DIR = Path(__file__).resolve().parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 LOGS_DIR = Path(BASE_DIR, "logs")
 LOGS_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -28,7 +26,7 @@ logging_config = {
         "info": {
             "class": "logging.handlers.RotatingFileHandler",
             "filename": Path(LOGS_DIR, "info.log"),
-            "maxBytes": 10485760,  # 1 MB
+            "maxBytes": 10485760,  # 10 MB
             "backupCount": 10,
             "formatter": "detailed",
             "level": logging.INFO,
@@ -36,7 +34,7 @@ logging_config = {
         "error": {
             "class": "logging.handlers.RotatingFileHandler",
             "filename": Path(LOGS_DIR, "error.log"),
-            "maxBytes": 10485760,  # 1 MB
+            "maxBytes": 10485760,  # 10 MB
             "backupCount": 10,
             "formatter": "detailed",
             "level": logging.ERROR,
@@ -49,13 +47,6 @@ logging_config = {
     },
 }
 
-dictConfig(config.logging_config)
+dictConfig(logging_config)
 logger = logging.getLogger(__name__)
-
-logger.root.handlers[0] = RichHandler(markup=True)  # set rich handler
-
-logger.debug("Debug")
-logger.info("Information")
-logger.warning("Warning")
-logger.error("Error")
-logger.critical("Critical Error")
+logger.root.handlers[0] = RichHandler(markup=True)
