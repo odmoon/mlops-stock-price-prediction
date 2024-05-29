@@ -71,6 +71,20 @@ docker build -t mlops-stock-price-prediction .
 ### Running the Docker Container
 docker run -it --rm mlops-stock-price-prediction
 ```
+### 6. Weights and Biases (wandb) Integration
+This project uses Weights and Biases for experiment tracking and model evaluation. You can view the experiment results and logs on the wandb project page.
+
+1. Ensure you have a wandb account. You can sign up on the wandb.ai webpage. 
+2. Log in to wandb from your terminal:
+
+```bash
+wandb login
+```
+3. After running the model training script, the metrics, including loss and RMSE scores, are logged to wandb.
+
+Shared wandb Reports:
+* https://api.wandb.ai/links/odmoon/bk64h1b3 
+
 
 Project Organization
 ------------
