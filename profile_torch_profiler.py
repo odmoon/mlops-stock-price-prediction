@@ -1,13 +1,7 @@
-# Profiling Step 4 of Part 2 of Project
-#by Maheen Khan
-# new profiling script using torch.profiler
-
 import torch
 import torch.profiler
 import os
 import sys
-
-# Dummy PyTorch model for demonstration
 import torch.nn as nn
 import torch.optim as optim
 
@@ -22,8 +16,7 @@ class PyTorchModel(nn.Module):
         out = self.fc(out[:, -1, :])
         return out
 
-# Function to simulate training (replace with actual PyTorch training loop)
-def train_model():
+def train_model(prof):
     model = PyTorchModel()
     criterion = nn.MSELoss()
     optimizer = optim.Adam(model.parameters(), lr=0.001)
@@ -37,19 +30,28 @@ def train_model():
         loss = criterion(outputs, targets)
         loss.backward()
         optimizer.step()
+        prof.step()  # Move profiler step inside the loop
 
-# Profile the training process
 def profile_training():
+    log_dir = './log/torch_profiler'
+    os.makedirs(log_dir, exist_ok=True)
+
+    if not os.access(log_dir, os.W_OK):
+        print(f"Warning: Directory '{log_dir}' is not writable.")
+        return
+
     with torch.profiler.profile(
         schedule=torch.profiler.schedule(wait=1, warmup=1, active=3, repeat=2),
-        on_trace_ready=torch.profiler.tensorboard_trace_handler('./log/torch_profiler'),
+        on_trace_ready=torch.profiler.tensorboard_trace_handler(log_dir),
         record_shapes=True,
         profile_memory=True,
         with_stack=True
     ) as prof:
-        train_model()
-        prof.step()
+        train_model(prof)  # Pass the profiler to the training function
 
 if __name__ == "__main__":
-    profile_training()
-    print("Torch profiler results saved to ./log/torch_profiler")
+    try:
+        profile_training()
+        print("Torch profiler results saved to ./log/torch_profiler")
+    except Exception as e:
+        print(f"An error occurred: {e}")
