@@ -168,7 +168,7 @@ Here are the steps that we followed in relation to our data set.
 
 1. Run the profiling script:
     ```bash
-    python profile_cprofile.py
+    python3 profile_cprofile.py
     ```
 
 2. The results will be saved to `cprofile_results.txt`.
@@ -189,7 +189,7 @@ Here are the steps that we followed in relation to our data set.
 
 1. Run the profiling script:
     ```bash
-    python profile_torch_profiler.py
+    python3 profile_torch_profiler.py
     ```
 
 2. The results will be saved to `./log/torch_profiler`.
@@ -218,14 +218,23 @@ Here are the steps that we followed in relation to our data set.
 ## Report for findings, challenges, and areas for improvement
 
 ## Findings
+
+Part 1:
 We found that the model was able to predict very well in terms of data that it already knew, but was not confident with future, unknown, data. When attempting to predict the stock price one month past the dataset, it created a consistent downward vector that did not appear to be indicative of the stock's future value. We attribute this to the fact that the model may be overfitted and is not confident in predicting data that is foreign to what it already knows. 
 As such, we are looking into other feature sets and possibilities to integrate into the model past pricing information like 'open' and 'high'. We believe that integrating sentiment analysis from news sources and social media, as well as larger economic indicators surrounding the stock, would be effective measures to train the model on as well in order to make accurate predictions. 
+
+Part 2:
 
 
 ## Challenges
 A challenge we had is finding a dataset we could understand in layman's terms that would be useful to predict. Even with finance in mind, datasets for stocks and cryptocurrency were either outdated or over complicated or too big or too small.
 
 The main challenge we are encountering is prediction past the dataset. We can only seem to train model for the current dataset but its failing to do the prediction for the future stocks as it is showing a downward trend which is not realistic. Our model is over fitted for the dataset, so it is too reliant on the data and is not confident in predicting the data.
+
+New Findings From Part 2:
+From Maheen: I found profiling to be challenging but it turns out my main issues was not knowing knowledge like using Python3 instead of installing the long convulated way. This would have saved me 4 hours of work. 
+
+I also could not get TensorBoard on local host to show my image, but I did get a log file generated for both cProfile and PyTorch. However, upon looking at the results, in Torch_Profiler, I could not make sense of what the results meant but I knew it was incorrect due to the localhost in TensorBoard not being able to show anything. For cProfile, it said it returned in 1 second with zero values, so I can tell there are still issues but I unfortunately ran out of time to resolve these issues. I wonder if it has to do with our stock prediction model not being accurate. 
 
 ## Areas for Improvement
 Exploration for other predictive methods outside of our current dataset. Possibly integration of other datasets would show us a more clearer path to where the error lies. We want to focus on one part of the dataset to make sure the model is running correctly before implementing with over 100 files of data. 
@@ -242,6 +251,7 @@ Exploration for other predictive methods outside of our current dataset. Possibl
     - Added sections 1.2-1.4 to the README.md where the selection of dataset is justified and possible model considerations
     - Wrote up team members roles in README.md
     - Wrote up report summarizing findings, challenges encountered, and areas for improvement with team.
+    - Wrote up profiling with cProfile and Torch.
 ## Dylan Neal
     - Proposed a preliminary long short-term memory model and wrote up the data documentation and training steps.
     - Converted jupyter notebook to source code for repo for submission
