@@ -1,194 +1,137 @@
 import os
+import sys
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_squared_error
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import LSTM, Dense, Dropout, Input
+from tensorflow.keras.layers import LSTM, Dense, Dropout
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.callbacks import EarlyStopping
 
+import hydra
+from omegaconf import DictConfig
+from hydra import initialize, compose
 
 import wandb
-import sys
+
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
-from src.models.logging.config import logger 
+from src.models.logging.config import logger
 
-# Initialize Weights and Biases
-wandb.init(project='MLOPS-STOCK-PRICE-PREDICTION')
+print("Current working directory:", os.getcwd())
+print("Absolute path of config directory:", os.path.abspath("/Users/dylanneal/Documents/mlops-stock-price-prediction/src/conf"))
 
-config = wandb.config
-config.learning_rate = 0.01
+class StockPredictor:
+    def __init__(self, cfg):
+        self.cfg = cfg
 
-logger.info("Weights and Biases initialized")
+    def load_data(self):
+        data_path = hydra.utils.to_absolute_path(self.cfg.dataset.file_path)
+        if not os.path.exists(data_path):
+            raise FileNotFoundError(f"Data file not found: {data_path}")
+        return pd.read_csv(data_path)
 
-# Set up the relative path to the file
-data_path = os.path.join(os.path.dirname(__file__), '..', '..', 'src', 'data', 'stock_data', 'ABBV.csv')
-full_path = os.path.normpath(data_path)
+    def preprocess_data(self, data):
+        data['date'] = pd.to_datetime(data['date'])
+        data.set_index('date', inplace=True)
+        features = data[['open', 'high', 'low', 'close']].values
+        scaler = MinMaxScaler(feature_range=(0, 1))
+        return scaler.fit_transform(features), scaler
 
-# * Data is in the form of a CSV file * 
+    def create_dataset(self, data, look_back=1):
+        X, Y = [], []
+        for i in range(len(data) - look_back - 1):
+            X.append(data[i:(i + look_back), :])
+            Y.append(data[i + look_back, 3])  # We are predicting the 'close' price
+        return np.array(X), np.array(Y)
 
-# Load the dataset
-logger.info("Loading dataset")
-abbv_data = pd.read_csv(full_path)
+    def build_model(self, input_shape):
+        model = Sequential()
+        model.add(LSTM(self.cfg.model.hidden_dim, input_shape=input_shape, return_sequences=True))
+        model.add(Dropout(self.cfg.model.dropout))
+        model.add(LSTM(self.cfg.model.hidden_dim, return_sequences=False))
+        model.add(Dropout(self.cfg.model.dropout))
+        model.add(Dense(1))
+        model.compile(optimizer=Adam(learning_rate=self.cfg.model.parameters.learning_rate),
+                      loss='mean_squared_error')
+        return model
 
-# Check if the data file exists
-if not os.path.exists(full_path):
-    logger.error("Data file not found: %s", full_path)
-    sys.exit("Data file not found")
+    def train_model(self, model, trainX, trainY, testX, testY):
+        early_stopping = EarlyStopping(monitor='val_loss', patience=self.cfg.training.early_stopping_patience)
+        history = model.fit(trainX, trainY,
+                            epochs=self.cfg.model.parameters.epochs,
+                            batch_size=self.cfg.model.parameters.batch_size,
+                            validation_data=(testX, testY),
+                            callbacks=[early_stopping])
+        return history
 
-# * The 'date' column is converted to datetime format and set as the DataFrame index *
+    def evaluate(self, model, trainX, trainY, testX, testY, scaler):
+        trainPredict = model.predict(trainX)
+        testPredict = model.predict(testX)
+        trainPredict = scaler.inverse_transform(np.concatenate((trainPredict, trainX[:, :, 1:]), axis=-1))[:, 0]
+        testPredict = scaler.inverse_transform(np.concatenate((testPredict, testX[:, :, 1:]), axis=-1))[:, 0]
+        trainY_original = scaler.inverse_transform(np.concatenate((trainY.reshape(-1, 1), trainX[:, :, 1]), axis=-1))[:, 0]
+        testY_original = scaler.inverse_transform(np.concatenate((testY.reshape(-1, 1), testX[:, :, 1]), axis=-1))[:, 0]
+        return trainY_original, trainPredict, testY_original, testPredict
 
-# Convert the 'date' column to datetime format and set as index
-abbv_data['date'] = pd.to_datetime(abbv_data['date'])
-abbv_data.set_index('date', inplace=True)
+    def plot_results(self, trainY_original, trainPredict, testY_original, testPredict, dates):
+        plt.figure(figsize=(15, 8))
+        plt.plot(dates[:len(trainY_original)], trainY_original, label='Train True')
+        plt.plot(dates[:len(trainPredict)], trainPredict, label='Train Predict')
+        plt.plot(dates[len(trainY_original):], testY_original, label='Test True')
+        plt.plot(dates[len(trainPredict):], testPredict, label='Test Predict')
+        plt.title('Stock Price Prediction')
+        plt.xlabel('Time (Year)')
+        plt.ylabel('Stock Price')
+        plt.legend()
+        plt.xticks(rotation=45)
+        plt.show()
 
 
-
-# * Feature Selection for 'open, 'high', 'low', and 'close' prices for model input *
-
-# Select features to be used in the model
-features = abbv_data[['open', 'high', 'low', 'close']].values
-
-
-# * Feature scaling between 0 and 1 to improve neural network performance *
-
-# Scale the features to be between 0 and 1
-scaler = MinMaxScaler(feature_range=(0, 1))
-data_scaled = scaler.fit_transform(features)
-
-
-# * Look back defines how many previous timesteps are used to predict the next time step *
-# Define look_back period
-look_back = 60
-
-# This function constructs input and output datasets for the LSTM.
-# For each instance, it takes 'look_back' days of features as input
-# and the next day's closing price as output
-
-# Function to create dataset with multiple features
-def create_dataset(dataset, look_back=60):
+@hydra.main(config_path="/Users/dylanneal/Documents/mlops-stock-price-prediction/src/conf", config_name="config", version_base=None)
+def main(cfg: DictConfig):
     
-    X, Y = [], []
+    print("Running stock prediction with configuration:", cfg)
     
-    for i in range(len(dataset) - look_back - 1):
-        a = dataset[i:(i + look_back), :]
-        X.append(a)
-        Y.append(dataset[i + look_back, -1])  # Target is still 'close' price
-        
-    return np.array(X), np.array(Y)
+    wandb.init(project=cfg.wandb.project)
+    wandb.config.update(cfg)
 
-logger.info("Creating dataset")
-# Create dataset
-X, y = create_dataset(data_scaled)
+    stock_predictor = StockPredictor(cfg)
+
+    data = stock_predictor.load_data()
+    data_scaled, scaler = stock_predictor.preprocess_data(data)
+
+    look_back = cfg.training.look_back
+    X, Y = stock_predictor.create_dataset(data_scaled, look_back)
+
+    train_size = int(len(X) * 0.8)
+    trainX, testX = X[:train_size], X[train_size:]
+    trainY, testY = Y[:train_size], Y[train_size:]
+
+    model = stock_predictor.build_model((look_back, X.shape[2]))
+    stock_predictor.train_model(model, trainX, trainY, testX, testY)
+
+    trainY_original, trainPredict, testY_original, testPredict = stock_predictor.evaluate(model, trainX, trainY, testX, testY, scaler)
+
+    dates = data.index[look_back+1:look_back+1+len(trainY_original)+len(testY_original)]
+    stock_predictor.plot_results(trainY_original, trainPredict, testY_original, testPredict, dates)
 
 
-# The dataset is split into training and testing parts based on a percentage of 67%
-
-# Splitting data into train and test sets
-train_size = int(len(X) * 0.67)
-test_size = len(X) - train_size
-trainX, testX = X[:train_size], X[train_size:]
-trainY, testY = y[:train_size], y[train_size:]
-
-logger.info("Data split into training and testing sets")
-
-# Model Architecture: The model consists of two LSTM layers
-# interspersed with Dropoutlayers to prevent overfitting,
-# and a Dense layer for output.
-
-# The model is compiled with the mean squared error loss function and the adam optimizer.
-
-# Create and compile the LSTM model
-logger.info("Creating and compiling the LSTM model")
-model = Sequential([
-    Input(shape=(trainX.shape[1], 4)),
+if __name__ == "__main__":
+    # Print the absolute path of the config file for debugging
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    config_dir = os.path.abspath(os.path.join(script_dir, "../conf"))
+    config_file = os.path.join(config_dir, "config.yml")
     
-    LSTM(50, return_sequences=True),
+    print(f"Current working directory: {os.getcwd()}")
+    print(f"Absolute path of config directory: {config_dir}")
+    print(f"Absolute path of config.yml: {config_file}")
     
-    Dropout(0.2),
-    
-    LSTM(50),
-    
-    Dropout(0.2),
-    
-    Dense(1)
-])
+    # Check if config.yml exists
+    if not os.path.exists(config_file):
+        print(f"Configuration file not found: {config_file}")
+    else:
+        print(f"Configuration file found: {config_file}")
 
-adam_optimizer = Adam(learning_rate=0.0001)
-model.compile(loss='mean_squared_error', optimizer=adam_optimizer)
-
-
-# Early Stopping is used to halt training when the validation loss hasn't improved for a
-# specified number of epochs. This helps prevent overfitting.
-
-
-# Setup early stopping
-early_stopping = EarlyStopping(monitor='val_loss', patience=10, restore_best_weights=True)
-
-
-# LET'S TRAIN
-
-# The model is trained using the training data with
-# validation split to monitor performance during training.
-
-
-# Fit the model
-logger.info("Training the model")
-history = model.fit(trainX, trainY, validation_split=0.2, epochs=100, batch_size=10, verbose=2, callbacks=[early_stopping])
-
-
-# Extract loss values from history and log them into wandb
-for i in range(len(history.history['loss'])):
-    wandb.log({"epoch": i + 1, "loss": history.history['loss'][i], "val_loss": history.history['val_loss'][i]})
-    logger.info("Epoch %d: loss=%f, val_loss=%f", i + 1, history.history['loss'][i], history.history['val_loss'][i])
-
-# Making predictions
-logger.info("Making predictions")
-trainPredict = model.predict(trainX)
-testPredict = model.predict(testX)
-
-# * Since the output was scaled, the predictions are rescaled back to the original 
-# scale to interpret them in the context of actual stock prices. * 
-
-
-# Inverting predictions to revert back to the original scale
-trainPredict = scaler.inverse_transform(np.c_[trainPredict, np.zeros((len(trainPredict), 3))])[:, 0]
-testPredict = scaler.inverse_transform(np.c_[testPredict, np.zeros((len(testPredict), 3))])[:, 0]
-trainY_original = scaler.inverse_transform(np.c_[trainY, np.zeros((len(trainY), 3))])[:, 0]
-testY_original = scaler.inverse_transform(np.c_[testY, np.zeros((len(testY), 3))])[:, 0]
-
-
-# The Root Mean Squared Error (RMSE) is calculated for both training and testing
-# predictions to evaluate the performance of the model.
-
-# The Root Mean Squared Error (RMSE) is calculated for both training and testing
-# predictions to evaluate the performance of the model.
-
-# Calculate root mean squared error
-trainScore = np.sqrt(mean_squared_error(trainY_original, trainPredict))
-testScore = np.sqrt(mean_squared_error(testY_original, testPredict))
-print('Train Score: %.2f RMSE' % trainScore)
-print('Test Score: %.2f RMSE' % testScore)
-wandb.log({"train_rmse": trainScore, "test_rmse": testScore})
-
-# Extract date index for plotting
-dates = abbv_data.index[look_back+1:look_back+1+len(trainY_original)+len(testY_original)]
-
-# The original and predicted prices are plotted against time for both training and test datasets.
-
-# Plotting baseline and predictions
-plt.figure(figsize=(12, 6))
-plt.plot(dates[:len(trainY_original)], trainY_original, label='Original Train')
-plt.plot(dates[:len(trainY_original)], trainPredict, label='Predicted Train')
-plt.plot(dates[len(trainY_original):], testY_original, label='Original Test')
-plt.plot(dates[len(trainY_original):], testPredict, label='Predicted Test')
-plt.title('Stock Price Prediction')
-plt.xlabel('Time (Year)')
-plt.ylabel('Stock Price')
-plt.legend()
-plt.xticks(rotation=45)  # Rotate date labels for better visibility
-plt.show()
-
-
+    main()
