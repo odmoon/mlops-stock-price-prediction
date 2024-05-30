@@ -159,6 +159,61 @@ Here are the steps that we followed in relation to our data set.
     14. The date information is indexed
     15. The Model is plotted. 
 
+## Profiling Documentation
+# Profiling Documentation
+
+## cProfile Profiling
+
+### How to Run
+
+1. Run the profiling script:
+    ```bash
+    python profile_cprofile.py
+    ```
+
+2. The results will be saved to `cprofile_results.txt`.
+
+### Interpreting Results
+
+- The results show function call counts and the cumulative time spent in each function.
+- Focus on functions with high cumulative time for optimization.
+
+### Optimizations
+
+- **High time in data loading:** Consider using efficient data structures or libraries.
+- **High time in training:** Optimize the model architecture or use more efficient training loops.
+
+## Torch Profiler
+
+### How to Run
+
+1. Run the profiling script:
+    ```bash
+    python profile_torch_profiler.py
+    ```
+
+2. The results will be saved to `./log/torch_profiler`.
+
+### Interpreting Results
+
+- Use TensorBoard to visualize the profiling results:
+    ```bash
+    tensorboard --logdir=./log/torch_profiler
+    ```
+
+- Analyze the timeline, memory usage, and bottlenecks.
+
+### Optimizations
+
+- **High GPU usage:** Optimize batch sizes and model architecture.
+- **Memory bottlenecks:** Use mixed precision training or gradient checkpointing.
+
+## General Tips
+
+- **Vectorization:** Ensure operations are vectorized and avoid Python loops in favor of NumPy operations.
+- **Parallelism:** Use multi-threading or multi-processing for data loading and preprocessing.
+- **Hardware Utilization:** Ensure the GPU is fully utilized during training.
+
 
 ## Report for findings, challenges, and areas for improvement
 
