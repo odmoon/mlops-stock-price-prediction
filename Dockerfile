@@ -23,7 +23,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . /app/
 
 # Set environment variables for wandb
-ENV WANDB_API_KEY=833a9c73668aca67fd18dd8a303891e920c83afe
+ENV WANDB_API_KEY=pass_your_API_token_for_wandb
 
 # Define the command to run your application
 CMD ["python", "src/models/ABBV_StockPrediction1.py"]
