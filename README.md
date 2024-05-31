@@ -45,7 +45,7 @@ source venv/bin/activate
 ```
 * Windows: 
 ```bash
-python -m venv venv
+python3 -m venv venv
 .\venv\Scripts\activate
 ```
 ### 3. Install dependencies
@@ -54,7 +54,7 @@ pip install -r requirements.txt
 ``` 
 or manually install following: 
 ```bash
-pip install pandas numpy matplotlib scikit-learn tensorflow
+pip install pandas numpy matplotlib scikit-learn tensorflow torch hydra-core wandb rich
 ```
 ### 4. Running the code 
 ```bash
@@ -78,17 +78,32 @@ This project uses Weights and Biases for experiment tracking and model evaluatio
 2. Log in to wandb from your terminal:
 
 ```bash
+### Copy your wandb API token and paste after the command below
 wandb login
 ```
 3. After running the model training script, the metrics, including loss and RMSE scores, are logged to wandb.
+Note: Pass your WandB API token as environment variable in DockerFile if the model runs on container
 
-Shared wandb Reports:
+## Shared wandb Report:
 * https://api.wandb.ai/links/odmoon/bk64h1b3 
 
+### 7. Logging 
+The project uses Python's built-in logging module configured with rich for enhanced log formatting. The logging configuration is defined in src/models/logging/config.py. The logging configuration includes handlers for console output, info logs, and error logs. 
+Logs are stored in src/logs directory. 
+
+### 8. Hydra configuration 
+
+Configuration files for Hydra stored in the conf directory at the root of the project. Config YAML file defines parameters for different aspects of the model, such as dataset paths, model architecture, training parameters. The output log is stored in outputs folder in root directory. 
+Hydra allows you to override any configuration parameter from the command line. For example, to change the learning rate and the number of epochs, you can run:
+
+```bash
+python src/models/ABBV_StockPrediction1.py model.parameters.learning_rate=0.001 model.parameters.epochs=50
+```
 
 Project Organization
 ------------
-
+    ├── conf
+    │   └── config.yaml    <- Hydra config file for parameter configuration management
     ├── LICENSE
     ├── Makefile           <- Makefile with commands like `make data` or `make train` /future task/
     ├── README.md          <- The top-level README for developers using this project.
@@ -101,8 +116,6 @@ Project Organization
     ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
     │                         the creator's initials, and a short `-` delimited description, e.g.
     │                         `1.0-jqp-initial-data-exploration`.
-    │
-    ├── references         <- Data dictionaries, manuals, and all other explanatory materials.
     │
     ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
     │   └── figures        <- Generated graphics and figures to be used in reporting
@@ -120,9 +133,7 @@ Project Organization
     │   ├── models         <- Scripts to train models and then use trained models to make
     │   │   │                 predictions
     │   │   └── ABBV_StockPrediction1.py
-    │   │
-    │   └── visualization  <- Scripts to create exploratory and results oriented visualizations
-    │       └── visualize.py
+    │   └── 
     └── 
 
 
@@ -246,6 +257,10 @@ Exploration for other predictive methods outside of our current dataset. Possibl
     - wrote up the project scope, instructions of environment setup and dependencies in README.md
     set up the environment as well with cookiecutter template to provide requirements.txt and respective python files
     - Wrote up report summarizing findings, challenges encountered, and areas for improvement with team.
+    - Containerized the model and tested locally using docker image build and container run. 
+    - Applied Logging into main model along with rich handler and the configurations 
+    - Integrated WandB experiment tracking and report dashboard with the metrics. 
+    - Generated plot graphic into /reports directory
 
 ## Maheen Khan
     - Added sections 1.2-1.4 to the README.md where the selection of dataset is justified and possible model considerations
@@ -264,6 +279,8 @@ Exploration for other predictive methods outside of our current dataset. Possibl
 https://www.datacamp.com/tutorial/lstm-python-stock-market
 
 https://www.youtube.com/watch?si=4OR6BJm8pIQzUgHZ&v=YCzL96nL7j0&feature=youtu.be
+
+https://docs.wandb.ai
 
 ChatGPT 
 GitHub Copilot

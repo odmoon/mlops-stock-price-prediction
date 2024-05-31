@@ -4,37 +4,54 @@
 
 import cProfile
 import pstats
+import io
 import os
 import sys
 import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.metrics import mean_squared_error
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import LSTM, Dense, Dropout, Input
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.callbacks import EarlyStopping
+import wandb
+import sys
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
+from src.models.logging.config import logger
+import hydra
+from omegaconf import DictConfig
 
-print("Current working directory:", os.getcwd())
+def profile_model_script():
+    # Set up the relative path to the model script
+    script_dir = os.path.dirname(__file__)
+    model_script = os.path.join(script_dir, 'src', 'models', 'ABBV_StockPrediction1.py')
 
-# Set up the relative path to the stock prediction script
-script_dir = os.path.dirname(__file__)
-data_dir = os.path.join(script_dir, 'src', 'data', 'stock_data')
-csv_file = 'ABBV.csv'
-csv_path = os.path.join(data_dir, csv_file)
+    # Ensure the script exists
+    if not os.path.exists(model_script):
+        print(f"Model script not found: {model_script}")
+        sys.exit(1)
 
-# Define the path for saving profiling results
-profile_output = os.path.join(script_dir, 'cprofile_results.txt')
+    # Define the path for saving profiling results
+    profile_output = os.path.join(script_dir, 'cprofile_results.txt')
 
-def main():
-    # Reading the CSV file
-    df = pd.read_csv(csv_path)
-
-    # Running the stock prediction script with cProfile
+    # Run the model script with cProfile
     profile = cProfile.Profile()
     profile.enable()
-    # Call your prediction function here passing df as an argument
+
+    # Read and execute the model script
+    with open(model_script, 'rb') as f:
+        exec(compile(f.read(), model_script, 'exec'), globals(), locals())
+
     profile.disable()
 
-    # Saving the profiling results to a file
+    # Save the profiling results to a file
     with open(profile_output, 'w') as f:
         ps = pstats.Stats(profile, stream=f)
         ps.strip_dirs().sort_stats('time').print_stats()
 
-    print("cProfile results saved to {}".format(profile_output))
+    print(f"cProfile results saved to {profile_output}")
 
 if __name__ == "__main__":
-    main()
+    profile_model_script()

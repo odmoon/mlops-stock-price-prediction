@@ -1,0 +1,49 @@
+{
+    "os": "macOS-13.1-arm64-arm-64bit",
+    "python": "3.9.18",
+    "heartbeatAt": "2024-05-31T18:02:16.972166",
+    "startedAt": "2024-05-31T18:02:16.324158",
+    "docker": null,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "/Users/odonchimeg/Documents/classproject/mlops-stock-price-prediction/profile_cprofile.py",
+    "codePathLocal": null,
+    "codePath": "profile_cprofile.py",
+    "git": {
+        "remote": "https://github.com/odmoon/mlops-stock-price-prediction",
+        "commit": "3e6488fa6c031a555e4206a7ee110e01a7ad5b60"
+    },
+    "email": "obold1@depaul.edu",
+    "root": "/Users/odonchimeg/Documents/classproject/mlops-stock-price-prediction",
+    "host": "odi-mac.local",
+    "username": "odonchimeg",
+    "executable": "/opt/anaconda3/envs/mlops-stock-price-prediction/bin/python",
+    "cpu_count": 8,
+    "cpu_count_logical": 8,
+    "cpu_freq": {
+        "current": 3204,
+        "min": 600,
+        "max": 3204
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 3204,
+            "min": 600,
+            "max": 3204
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 228.27386474609375,
+            "used": 12.264602661132812
+        }
+    },
+    "gpuapple": {
+        "type": "arm",
+        "vendor": "Apple"
+    },
+    "memory": {
+        "total": 8.0
+    }
+}
