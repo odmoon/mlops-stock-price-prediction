@@ -82,8 +82,12 @@ wandb login
 ```
 3. After running the model training script, the metrics, including loss and RMSE scores, are logged to wandb.
 
-Shared wandb Reports:
+## Shared wandb Report:
 * https://api.wandb.ai/links/odmoon/bk64h1b3 
+
+### 7. Logging 
+The project uses Python's built-in logging module configured with rich for enhanced log formatting. The logging configuration is defined in src/models/logging/config.py. The logging configuration includes handlers for console output, info logs, and error logs. 
+Logs are stored in src/logs directory. 
 
 
 Project Organization
@@ -102,8 +106,6 @@ Project Organization
     │                         the creator's initials, and a short `-` delimited description, e.g.
     │                         `1.0-jqp-initial-data-exploration`.
     │
-    ├── references         <- Data dictionaries, manuals, and all other explanatory materials.
-    │
     ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
     │   └── figures        <- Generated graphics and figures to be used in reporting
     │
@@ -120,9 +122,7 @@ Project Organization
     │   ├── models         <- Scripts to train models and then use trained models to make
     │   │   │                 predictions
     │   │   └── ABBV_StockPrediction1.py
-    │   │
-    │   └── visualization  <- Scripts to create exploratory and results oriented visualizations
-    │       └── visualize.py
+    │   └── 
     └── 
 
 
@@ -246,6 +246,10 @@ Exploration for other predictive methods outside of our current dataset. Possibl
     - wrote up the project scope, instructions of environment setup and dependencies in README.md
     set up the environment as well with cookiecutter template to provide requirements.txt and respective python files
     - Wrote up report summarizing findings, challenges encountered, and areas for improvement with team.
+    - Containerized the model and tested locally using docker image build and run. 
+    - Applied Logging into main model along with rich handler and the configurations 
+    - Integrated WandB experiment tracking and report dashboard with the metrics. 
+    - Generated plot graphic into /reports directory
 
 ## Maheen Khan
     - Added sections 1.2-1.4 to the README.md where the selection of dataset is justified and possible model considerations
