@@ -1,3 +1,7 @@
+# Profiling Step 4 of Part 2 of Project
+# by Maheen Khan
+# new profiling script using cProfile
+
 import cProfile
 import pstats
 import io

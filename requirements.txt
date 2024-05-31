@@ -4,9 +4,13 @@ matplotlib
 numpy
 scikit-learn
 tensorflow
+
+##experiment tracking and logging dependencies 
 wandb
 rich
 
 #Profiling dependencies
 torch
+#Hydra dependencies
 hydra
+omegaconf

@@ -89,10 +89,19 @@ wandb login
 The project uses Python's built-in logging module configured with rich for enhanced log formatting. The logging configuration is defined in src/models/logging/config.py. The logging configuration includes handlers for console output, info logs, and error logs. 
 Logs are stored in src/logs directory. 
 
+### 8. Hydra configuration 
+
+Configuration files for Hydra stored in the conf directory at the root of the project. Config YAML file defines parameters for different aspects of the model, such as dataset paths, model architecture, training parameters. The output log is stored in outputs folder in root directory. 
+Hydra allows you to override any configuration parameter from the command line. For example, to change the learning rate and the number of epochs, you can run:
+
+```bash
+python src/models/ABBV_StockPrediction1.py model.parameters.learning_rate=0.001 model.parameters.epochs=50
+```
 
 Project Organization
 ------------
-
+    ├── conf
+    │   └── config.yaml    <- Hydra config file for parameter configuration management
     ├── LICENSE
     ├── Makefile           <- Makefile with commands like `make data` or `make train` /future task/
     ├── README.md          <- The top-level README for developers using this project.
