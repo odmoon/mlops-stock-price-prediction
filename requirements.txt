@@ -12,5 +12,5 @@ rich
 #Profiling dependencies
 torch
 #Hydra dependencies
-hydra
+hydra-core==1.1.0
 omegaconf

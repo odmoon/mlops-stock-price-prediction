@@ -45,7 +45,7 @@ source venv/bin/activate
 ```
 * Windows: 
 ```bash
-python -m venv venv
+python3 -m venv venv
 .\venv\Scripts\activate
 ```
 ### 3. Install dependencies
@@ -54,7 +54,7 @@ pip install -r requirements.txt
 ``` 
 or manually install following: 
 ```bash
-pip install pandas numpy matplotlib scikit-learn tensorflow
+pip install pandas numpy matplotlib scikit-learn tensorflow torch hydra-core wandb rich
 ```
 ### 4. Running the code 
 ```bash
@@ -78,9 +78,11 @@ This project uses Weights and Biases for experiment tracking and model evaluatio
 2. Log in to wandb from your terminal:
 
 ```bash
+### Copy your wandb API token and paste after the command below
 wandb login
 ```
 3. After running the model training script, the metrics, including loss and RMSE scores, are logged to wandb.
+Note: Pass your WandB API token as environment variable in DockerFile if the model runs on container
 
 ## Shared wandb Report:
 * https://api.wandb.ai/links/odmoon/bk64h1b3 
@@ -255,7 +257,7 @@ Exploration for other predictive methods outside of our current dataset. Possibl
     - wrote up the project scope, instructions of environment setup and dependencies in README.md
     set up the environment as well with cookiecutter template to provide requirements.txt and respective python files
     - Wrote up report summarizing findings, challenges encountered, and areas for improvement with team.
-    - Containerized the model and tested locally using docker image build and run. 
+    - Containerized the model and tested locally using docker image build and container run. 
     - Applied Logging into main model along with rich handler and the configurations 
     - Integrated WandB experiment tracking and report dashboard with the metrics. 
     - Generated plot graphic into /reports directory
@@ -277,6 +279,8 @@ Exploration for other predictive methods outside of our current dataset. Possibl
 https://www.datacamp.com/tutorial/lstm-python-stock-market
 
 https://www.youtube.com/watch?si=4OR6BJm8pIQzUgHZ&v=YCzL96nL7j0&feature=youtu.be
+
+https://docs.wandb.ai
 
 ChatGPT 
 GitHub Copilot
