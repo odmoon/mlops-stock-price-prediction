@@ -97,7 +97,7 @@ Configuration files for Hydra stored in the conf directory at the root of the pr
 Hydra allows you to override any configuration parameter from the command line. For example, to change the learning rate and the number of epochs, you can run:
 
 ```bash
-python src/models/ABBV_StockPrediction1.py model.parameters.learning_rate=0.001 model.parameters.epochs=50
+python3 src/models/ABBV_StockPrediction1.py model.parameters.learning_rate=0.001 model.parameters.epochs=50
 ```
 
 Project Organization
@@ -230,12 +230,10 @@ Here are the steps that we followed in relation to our data set.
 
 ## Findings
 
-Part 1:
+
 We found that the model was able to predict very well in terms of data that it already knew, but was not confident with future, unknown, data. When attempting to predict the stock price one month past the dataset, it created a consistent downward vector that did not appear to be indicative of the stock's future value. We attribute this to the fact that the model may be overfitted and is not confident in predicting data that is foreign to what it already knows. 
 As such, we are looking into other feature sets and possibilities to integrate into the model past pricing information like 'open' and 'high'. We believe that integrating sentiment analysis from news sources and social media, as well as larger economic indicators surrounding the stock, would be effective measures to train the model on as well in order to make accurate predictions. 
-
-Part 2:
-
+ 
 
 ## Challenges
 A challenge we had is finding a dataset we could understand in layman's terms that would be useful to predict. Even with finance in mind, datasets for stocks and cryptocurrency were either outdated or over complicated or too big or too small.
@@ -243,12 +241,17 @@ A challenge we had is finding a dataset we could understand in layman's terms th
 The main challenge we are encountering is prediction past the dataset. We can only seem to train model for the current dataset but its failing to do the prediction for the future stocks as it is showing a downward trend which is not realistic. Our model is over fitted for the dataset, so it is too reliant on the data and is not confident in predicting the data.
 
 New Findings From Part 2:
-From Maheen: I found profiling to be challenging but it turns out my main issues was not knowing knowledge like using Python3 instead of installing the long convulated way. This would have saved me 4 hours of work. 
+I found profiling to be challenging but it turns out my main issues was not knowing knowledge like using Python3 instead of installing the long convulated way. I also could not get TensorBoard on local host to show my image, but I did get a log file generated for both cProfile and PyTorch. However, upon looking at the results, in Torch_Profiler, I could not make sense of what the results meant but I knew it was incorrect due to the localhost in TensorBoard not being able to show anything. For cProfile, it said it returned in 1 second with zero values, so I can tell there are still issues but I unfortunately ran out of time to resolve these issues. I wonder if it has to do with our stock prediction model not being accurate.
 
-I also could not get TensorBoard on local host to show my image, but I did get a log file generated for both cProfile and PyTorch. However, upon looking at the results, in Torch_Profiler, I could not make sense of what the results meant but I knew it was incorrect due to the localhost in TensorBoard not being able to show anything. For cProfile, it said it returned in 1 second with zero values, so I can tell there are still issues but I unfortunately ran out of time to resolve these issues. I wonder if it has to do with our stock prediction model not being accurate. 
+We also learned that a lot of the issues were not having a main function in the python file which we then added on and this resolved the profiling issues and the configuration management issue with Hydra. We were then able to generate a cprofile with actual results and time taken for the function, as well as the Hydra config.yaml file and showed the parameters needed. 
+We also learned for Hydra we had to update the requirements.txt to show hydra-core==1.1.0 instead of just stating 'hydra'
+
+Initally when we ran the Docker container, the graph was not saving automatically or showing, so to resolve this issue we improved the code to save the plot under the reports folder. We also do not want to expose API key in Docker, so instead of encrypting we set an environment variable so only the people who have access to the key can use it. 
 
 ## Areas for Improvement
 Exploration for other predictive methods outside of our current dataset. Possibly integration of other datasets would show us a more clearer path to where the error lies. We want to focus on one part of the dataset to make sure the model is running correctly before implementing with over 100 files of data. 
+
+A lot more practice with technologies such as cProfile, Torch, and Hydra would have been helpful. I think we had a huge dataset and complex model we were attempting and possibly working with a simpler model first in class would have been more helpful where we integrate all the technologies together instead of separately. Also I think a lot of issues we had was not knowing where certain files and folders go in the repo, whether its global or in src, so more practice with that would be helpful as well. We have a ton of logs that are produced and it slows down the model as well. 
 
 
 ## Members of Group Project and Roles
@@ -265,12 +268,14 @@ Exploration for other predictive methods outside of our current dataset. Possibl
 ## Maheen Khan
     - Added sections 1.2-1.4 to the README.md where the selection of dataset is justified and possible model considerations
     - Wrote up team members roles in README.md
+    - Updated README.md at end of part 2 with challenges and reports
     - Wrote up report summarizing findings, challenges encountered, and areas for improvement with team.
     - Wrote up profiling with cProfile and Torch.
 ## Dylan Neal
     - Proposed a preliminary long short-term memory model and wrote up the data documentation and training steps.
     - Converted jupyter notebook to source code for repo for submission
     - Wrote up report summarizing findings, challenges encountered, and areas for improvement with team.
+    - Wrote up Hydra configuration in python file for stock prediction and config.yaml
 
 
 
