@@ -1,0 +1,5 @@
+outs:
+- md5: 2849766b97a72e21258b4058de73dfcc
+  size: 404514
+  hash: md5
+  path: CI.csv

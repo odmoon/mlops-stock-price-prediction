@@ -1,0 +1,5 @@
+outs:
+- md5: 84940fec60e7de21f5445d0065fe7e82
+  size: 428522
+  hash: md5
+  path: GSK.csv

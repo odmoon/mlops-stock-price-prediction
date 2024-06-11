@@ -1,0 +1,5 @@
+outs:
+- md5: 1fa56f16e912ef6e102e1291136fdffd
+  size: 278707
+  hash: md5
+  path: SCCO.csv

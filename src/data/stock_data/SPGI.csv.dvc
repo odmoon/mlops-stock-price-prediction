@@ -1,0 +1,5 @@
+outs:
+- md5: 80629f9d7b9a313c6dfe6bd278d5534f
+  size: 505889
+  hash: md5
+  path: SPGI.csv

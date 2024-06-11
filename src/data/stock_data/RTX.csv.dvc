@@ -1,0 +1,5 @@
+outs:
+- md5: fd2b1cfb2aa0c95034ebca4e35e59357
+  size: 582292
+  hash: md5
+  path: RTX.csv

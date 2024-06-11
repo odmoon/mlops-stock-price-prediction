@@ -1,0 +1,5 @@
+outs:
+- md5: ce0e038d0f3b1123f2d90e04da1a5100
+  size: 495151
+  hash: md5
+  path: MMC.csv

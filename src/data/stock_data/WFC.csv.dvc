@@ -1,0 +1,5 @@
+outs:
+- md5: 1c20c619e811f76993d1cf32c5717bb7
+  size: 492792
+  hash: md5
+  path: WFC.csv

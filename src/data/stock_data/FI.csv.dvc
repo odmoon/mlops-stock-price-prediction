@@ -1,0 +1,5 @@
+outs:
+- md5: e2c058317f16d656fdc1ee6b705fc7d8
+  size: 9287
+  hash: md5
+  path: FI.csv

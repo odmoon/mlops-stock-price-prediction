@@ -1,0 +1,5 @@
+outs:
+- md5: 64f95fce67b353ebbaf76d0a3eeee976
+  size: 200290
+  hash: md5
+  path: CRM.csv

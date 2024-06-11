@@ -1,0 +1,5 @@
+outs:
+- md5: 1610b14ac117fff1f30b788a76316ed3
+  size: 102980
+  hash: md5
+  path: ANET.csv
