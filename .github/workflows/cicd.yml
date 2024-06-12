@@ -1,4 +1,4 @@
-name: CI Workflow for model
+name: CI Workflow
 
 on:
   push:
@@ -27,9 +27,17 @@ jobs:
           pip install pytest dvc[runtime] ruff
           pip install -r requirements.txt
 
-      - name: Pull DVC data
+      - name: Authenticate to Google Cloud
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+        run: |
+          echo "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}" > $HOME/gcloud-service-key.json
+          gcloud auth activate-service-account --key-file=$HOME/gcloud-service-key.json
+          gcloud config set project YOUR_PROJECT_ID
+
+      - name: Pull DVC data
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: $HOME/gcloud-service-key.json
         run: |
           dvc pull
 
@@ -45,7 +53,7 @@ jobs:
       - name: Push DVC data
         if: success()
         env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATIONS_CREDENTIALS }}
+          GOOGLE_APPLICATION_CREDENTIALS: $HOME/gcloud-service-key.json
         run: |
           dvc push
 
@@ -64,8 +72,10 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build Docker image
+        env:
+          WANDB_API_KEY: ${{ secrets.WANDB_API_KEY }}
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/my-repo:latest .
+          docker build --build-arg WANDB_API_KEY=${{ secrets.WANDB_API_KEY }} -t ${{ secrets.DOCKER_USERNAME }}/my-repo:latest .
       
       - name: Push Docker image
         run: |
@@ -90,17 +100,26 @@ jobs:
           pip install dvc cml
           pip install -r requirements.txt
 
-      - name: Pull DVC data
+      - name: Authenticate to Google Cloud
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+        run: |
+          echo "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}" > $HOME/gcloud-service-key.json
+          gcloud auth activate-service-account --key-file=$HOME/gcloud-service-key.json
+          gcloud config set project mlops489-426113
+
+      - name: Pull DVC data
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: $HOME/gcloud-service-key.json
         run: |
           dvc pull
 
       - name: Run model training
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WANDB_API_KEY: ${{ secrets.WANDB_API_KEY }}
         run: |
-          python src/models/ABBV_StockPrediction1.py --cfg-path conf/config.yaml > metrics.txt
+          docker run --env WANDB_API_KEY=${{ secrets.WANDB_API_KEY }} ${{ secrets.DOCKER_USERNAME }}/my-repo:latest --cfg-path conf/config.yaml > metrics.txt
 
       - name: Publish CML report
         env:
