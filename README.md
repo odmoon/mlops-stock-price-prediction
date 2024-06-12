@@ -320,6 +320,10 @@ A lot more practice with technologies such as cProfile, Torch, and Hydra would h
     - Applied Logging into main model along with rich handler and the configurations
     - Integrated WandB experiment tracking and report dashboard with the metrics.
     - Generated plot graphic into /reports directory
+    - Created Github actions with Tests, Ruff, docker image build and CML
+    - Integrated DVC on local machine with the remote GCP storage
+    - Setup pre-commit hooks
+
 
 ## Maheen Khan
     - Added sections 1.2-1.4 to the README.md where the selection of dataset is justified and possible model considerations
