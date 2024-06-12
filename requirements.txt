@@ -17,6 +17,7 @@ omegaconf
 
 # other deployment dependencies 
 dvc
-dvc-gs
+dvc[gs]
 pytest
 ruff
+cml
