@@ -15,7 +15,7 @@ from src.models.logging.config import logger
 import hydra
 from omegaconf import DictConfig
 
-@hydra.main(config_path="../../conf", config_name="config", version_base="1.1")
+@hydra.main(config_path="../../conf", config_name="config")
 def main(cfg: DictConfig):
     # Initialize Weights and Biases
     wandb.init(project='MLOPS-STOCK-PRICE-PREDICTION')
