@@ -18,3 +18,4 @@ omegaconf
 # other deployment dependencies 
 dvc
 dvc-gs
+pytest
