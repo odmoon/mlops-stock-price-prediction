@@ -28,8 +28,10 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run tests
+        env:
+          PYTHONPATH: ${{ github.workspace }}/src
         run: |
-          PYTHONPATH=src pytest tests/
+          pytest tests/
 
       - name: Run ruff
         run: |
@@ -78,20 +80,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install dvc cml
           pip install -r requirements.txt
-
-      - name: Authenticate to Google Cloud
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
-        run: |
-          echo "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}" > $HOME/gcloud-service-key.json
-          gcloud auth activate-service-account --key-file=$HOME/gcloud-service-key.json
-          gcloud config set project mlops489-426113
-
-      - name: Pull DVC data
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: $HOME/gcloud-service-key.json
-        run: |
-          dvc pull
 
       - name: Run model training
         env:
