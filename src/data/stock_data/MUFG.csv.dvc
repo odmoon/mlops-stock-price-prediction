@@ -1,0 +1,5 @@
+outs:
+- md5: 7a60d94253387e54c6d6483bd5e2bfec
+  size: 214123
+  hash: md5
+  path: MUFG.csv

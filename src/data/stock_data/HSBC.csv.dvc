@@ -1,0 +1,5 @@
+outs:
+- md5: af1c2504955b080acf5127925482af4b
+  size: 251941
+  hash: md5
+  path: HSBC.csv

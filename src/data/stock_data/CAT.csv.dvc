@@ -1,0 +1,5 @@
+outs:
+- md5: 6f81fa415f4d93150f1eb3e578200e2b
+  size: 595846
+  hash: md5
+  path: CAT.csv

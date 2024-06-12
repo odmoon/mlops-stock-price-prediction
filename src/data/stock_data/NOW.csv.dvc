@@ -1,0 +1,5 @@
+outs:
+- md5: 94e6e41dddd8013c2e33180c2713873d
+  size: 123760
+  hash: md5
+  path: NOW.csv
