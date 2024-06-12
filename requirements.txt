@@ -1,11 +1,11 @@
 # external requirements
-pandas 
+pandas
 matplotlib
 numpy
 scikit-learn
 tensorflow
 
-##experiment tracking and logging dependencies 
+##experiment tracking and logging dependencies
 wandb
 rich
 
@@ -15,8 +15,9 @@ torch
 hydra-core==1.1.0
 omegaconf
 
-# other deployment dependencies 
+# other deployment dependencies
 dvc
 dvc[gs]
 pytest
 ruff
+pre-commit
