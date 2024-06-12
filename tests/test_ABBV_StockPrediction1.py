@@ -3,6 +3,7 @@ from unittest.mock import patch
 import pandas as pd
 import numpy as np
 from omegaconf import DictConfig
+import pytest
 
 # Mock configuration for testing
 mock_cfg = DictConfig({
@@ -63,3 +64,6 @@ def test_main(mock_read_csv, mock_wandb_log, mock_wandb_config, mock_wandb_init,
     # Clean up the created sample data file
     if os.path.exists(sample_csv_path):
         os.remove(sample_csv_path)
+
+if __name__ == "__main__":
+    pytest.main()
