@@ -86,6 +86,8 @@ Note: Pass your WandB API token as environment variable in DockerFile if the mod
 
 ## Shared wandb Report:
 * https://api.wandb.ai/links/odmoon/bk64h1b3 
+In case WandB trial ends. This is the sample output of the project experiment report. 
+
 
 ### 7. Logging 
 The project uses Python's built-in logging module configured with rich for enhanced log formatting. The logging configuration is defined in src/models/logging/config.py. The logging configuration includes handlers for console output, info logs, and error logs. 
@@ -225,6 +227,28 @@ Here are the steps that we followed in relation to our data set.
 - **Parallelism:** Use multi-threading or multi-processing for data loading and preprocessing.
 - **Hardware Utilization:** Ensure the GPU is fully utilized during training.
 
+## Model deployment and CI/CD 
+# Github Action workflows
+This project utilizes GitHub Actions to automate the CI/CD process. The workflows are defined in .github/workflows/ci.yml and include steps for testing, building Docker images, and running model training with Continuous Machine Learning (CML).
+
+# CI Workflow
+The CI workflow is triggered on every push and pull request to the main branch. 
+It consists of the following jobs:
+1. Test: Runs the unit tests (Pytest) and code quality checks with ruff.
+2. Build Docker Image: Builds and pushes a Docker image to Docker Hub.
+3. CML Run: Runs the model training and profiling, and publishes a report using CML.
+Workflow File: .github/workflows/ci.yml
+
+# Setup Instructions on Github action
+
+1. Set up GitHub Secrets: Ensure the following secrets are set up in your GitHub repository:
+DOCKER_PASSWORD: Docker Hub access token.
+DOCKER_USERNAME: Docker Hub username.
+WANDB_API_KEY: Weights and Biases API key passed along with the docker build and Dockerfile as env variable.
+GITHUB_TOKEN: GitHub token for CML (automatically provided).
+GOOGLE_APPLICATION_CREDENTIALS: Google Cloud service account JSON key /as the dvc is stored on remote GCP storage/ 
+
+2. Every PR or merge on main action will trigger automatically. You can also manually trigger them from the Actions tab in your GitHub repository. Logs and actions for each workflow is stored in Actions tab on your github repo.  
 
 ## Report for findings, challenges, and areas for improvement
 
