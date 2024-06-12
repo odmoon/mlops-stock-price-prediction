@@ -40,7 +40,7 @@ sample_df = pd.DataFrame(sample_data)
 sample_csv_path = 'tests/sample_data.csv'
 sample_df.to_csv(sample_csv_path, index=False)
 
-@patch('src.models.logging.config.logger')
+#@patch('src.models.logging.config.logger')
 @patch('wandb.init')
 @patch('wandb.config')
 @patch('wandb.log')
