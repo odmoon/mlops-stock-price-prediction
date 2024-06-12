@@ -91,7 +91,7 @@ Note: Pass your WandB API token as environment variable in DockerFile if the mod
 
 ### Shared wandb Report:
 * https://api.wandb.ai/links/odmoon/bk64h1b3
-* In case WandB trial ends. This is the sample output of the project experiment report.
+* In case WandB trial ends. Sample report has been saved to /reports directory
 
 
 ### 7. Logging
@@ -240,8 +240,10 @@ The CI workflow is triggered on every push and pull request to the main branch.
 It consists of the following jobs:
 1. Test: Runs the unit tests (Pytest) and code quality checks with ruff.
 2. Build Docker Image: Builds and pushes a Docker image to Docker Hub.
+    - Visit link to docker hub for latest images builds : https://hub.docker.com/repository/docker/odnoo/mlops-stock-price-prediction/tags
 3. CML Run: Runs the model training and profiling, and publishes a report using CML.
-Workflow File: .github/workflows/ci.yml
+
+Workflow File: .github/workflows/cicd.yml
 
 ### Setup Instructions on Github action
 
@@ -270,8 +272,7 @@ pre-commit install
 pre-commit run --all-files
 ```
 The pre-commit configuration is defined in the .pre-commit-config.yaml file.
-* Sample output file :
-
+![Pre-commit sample output](reports/Pre-commit_sample_output.png)
 
 ## Report for findings, challenges, and areas for improvement
 
@@ -283,17 +284,25 @@ As such, we are looking into other feature sets and possibilities to integrate i
 
 
 ## Challenges
+* Part 1:
 A challenge we had is finding a dataset we could understand in layman's terms that would be useful to predict. Even with finance in mind, datasets for stocks and cryptocurrency were either outdated or over complicated or too big or too small.
 
 The main challenge we are encountering is prediction past the dataset. We can only seem to train model for the current dataset but its failing to do the prediction for the future stocks as it is showing a downward trend which is not realistic. Our model is over fitted for the dataset, so it is too reliant on the data and is not confident in predicting the data.
 
-New Findings From Part 2:
+* Part 2:
 I found profiling to be challenging but it turns out my main issues was not knowing knowledge like using Python3 instead of installing the long convulated way. I also could not get TensorBoard on local host to show my image, but I did get a log file generated for both cProfile and PyTorch. However, upon looking at the results, in Torch_Profiler, I could not make sense of what the results meant but I knew it was incorrect due to the localhost in TensorBoard not being able to show anything. For cProfile, it said it returned in 1 second with zero values, so I can tell there are still issues but I unfortunately ran out of time to resolve these issues. I wonder if it has to do with our stock prediction model not being accurate.
 
 We also learned that a lot of the issues were not having a main function in the python file which we then added on and this resolved the profiling issues and the configuration management issue with Hydra. We were then able to generate a cprofile with actual results and time taken for the function, as well as the Hydra config.yaml file and showed the parameters needed.
 We also learned for Hydra we had to update the requirements.txt to show hydra-core==1.1.0 instead of just stating 'hydra'
 
 Initally when we ran the Docker container, the graph was not saving automatically or showing, so to resolve this issue we improved the code to save the plot under the reports folder. We also do not want to expose API key in Docker, so instead of encrypting we set an environment variable so only the people who have access to the key can use it.
+
+* Part 3:
+CML - because of the python version 3.8 is being used for the project, CML was not compatible to run for our project. We could not solve the compatibility issue within the Github Action. Therefore one step of CML workflow does fail, other steps like tests and docker build are succeeded when merging into main.
+
+DVC integration on github action - Because we have chosen the Google cloud storage as remote DVC, it was challenging to authenticate from Github action workflow to GCP storage. It was perfectly fine when testing on local machine. Therefore for github action we just used static data files to pass the test. See the Actions tab to see detailed log of the workflow statuses.
+
+Ruff - Formatting with ruff does help in cleanliness and structure of the project, however it was breaking the existing codes by removing necessary imports from the python files. We have tried to organize and package as much as possible with the init_.py files to pass the test.
 
 ## Areas for Improvement
 Exploration for other predictive methods outside of our current dataset. Possibly integration of other datasets would show us a more clearer path to where the error lies. We want to focus on one part of the dataset to make sure the model is running correctly before implementing with over 100 files of data.
