@@ -4,24 +4,9 @@
 
 import cProfile
 import pstats
-import io
 import os
 import sys
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-from sklearn.preprocessing import MinMaxScaler
-from sklearn.metrics import mean_squared_error
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import LSTM, Dense, Dropout, Input
-from tensorflow.keras.optimizers import Adam
-from tensorflow.keras.callbacks import EarlyStopping
-import wandb
-import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
-from src.models.logging.config import logger
-import hydra
-from omegaconf import DictConfig
 
 def profile_model_script():
     # Set up the relative path to the model script

@@ -67,7 +67,7 @@ def main(cfg: DictConfig):
 
     # Splitting data into train and test sets
     train_size = int(len(X) * 0.67)
-    test_size = len(X) - train_size
+    #test_size = len(X) - train_size
     trainX, testX = X[:train_size], X[train_size:]
     trainY, testY = y[:train_size], y[train_size:]
 

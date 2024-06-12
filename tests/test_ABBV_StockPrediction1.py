@@ -1,10 +1,7 @@
 import os
-import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 import pandas as pd
 import numpy as np
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import LSTM, Dense, Dropout, Input
 from omegaconf import DictConfig
 
 # Mock configuration for testing
