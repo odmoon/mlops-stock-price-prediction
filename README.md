@@ -135,6 +135,28 @@ docker run -it --rm mlops-stock-price-prediction
 ### Manually pushing  Docker Image to DockerHub
 docker push DOCKER_HUB_USERNAME/DOCKER_HUB_REPO_NAME:tagname
 ```
+```bash
+### Authenticate with your GCP account, set project id and create registry repo
+gcloud auth login
+gcloud config set project <project-id>
+gcloud artifacts repositories create stock-price-prediction \
+    --repository-format=docker \
+    --location=us \
+    --description="MLOps 489 docker registry"
+```
+```bash
+### authenticate docker to the GCP account to push and pull images
+gcloud auth configure-docker
+```
+```bash
+### Pull image from docker hub and pull to GCP artifcat registry
+docker pull DOCKER_HUB_USERNAME/DOCKER_HUB_REPO_NAME:tagname
+docker tag <image-name> gcr.io/<project-id>/<registry-name>/image
+docker push gcr.io/project-name/<registry-name>/<image>:<tag>
+```
+After pushing the image go to UI and will look like this :
+![GCP-artifact-registry](reports/GCP-artifact-registry.png)
+
 
 ### Weights and Biases (wandb) Integration
 This project uses Weights and Biases for experiment tracking and model evaluation. You can view the experiment results and logs on the wandb project page.
