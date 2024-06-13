@@ -1,162 +1,55 @@
-MLOPS solution for stock price prediction model
-==============================
-## Section 1 Project Proposal
+# MLOps Solution for Stock Price Prediction Model
 
-## 1.1 Project scope and objectives
+## Table of Contents
 
-## Project overview
-This project aims to develop a stock model prediction system that
-leverages Machine Learning (ML) to accurately predict stock prices.
-The core of this project is built on Python and utilizes ML model to
-analyze historical stock data and predict future trends.
-This project is enhanced with a complete MLOps solution for
-development, deployment, and monitoring of the ML models.
+- [Section 1: Project Proposal](#section-1-project-proposal)
+  - [1.1 Project Scope and Objectives](#11-project-scope-and-objectives)
+  - [1.2 Selection of Data and Open-Source Tools](#12-selection-of-data-and-open-source-tools)
+  - [1.3 Model Considerations](#13-model-considerations)
+  - [1.4 Open-Source Tools](#14-open-source-tools)
+- [Environment Setup](#environment-setup)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+- [Usage](#usage)
+  - [Running the Code](#running-the-code)
+  - [Docker Instructions](#docker-instructions)
+  - [Weights and Biases (wandb) Integration](#weights-and-biases-wandb-integration)
+  - [Logging](#logging)
+  - [Hydra Configuration](#hydra-configuration)
+- [Project Organization](#project-organization)
+- [Profiling Documentation](#profiling-documentation)
+  - [cProfile Profiling](#cprofile-profiling)
+  - [Torch Profiler](#torch-profiler)
+- [Model Deployment and CI/CD](#model-deployment-and-cicd)
+  - [GitHub Action Workflows](#github-action-workflows)
+- [Pre-commit Hooks](#pre-commit-hooks)
+- [Report for Findings, Challenges, and Areas for Improvement](#report-for-findings-challenges-and-areas-for-improvement)
+- [Members of Group Project and Roles](#members-of-group-project-and-roles)
+- [Sources Used](#sources-used)
 
-## Scope
+## Section 1: Project Proposal
 
-* Data Processing: Automated scripts to fetch, clean, and prepare historical stock data for training.
-* Model Training: Implementation of multiple ML models to evaluate their performance on stock price prediction.
-* Model Evaluation: Rigorous testing and validation strategies to ensure the accuracy and reliability of the models.
-* Model Deployment: Automated deployment of the best-performing model to a production environment.
-* Continuous Integration and Continuous Deployment (CI/CD): CI/CD pipelines to automate the testing and deployment processes.
-* Monitoring: Tools to monitor the model's performance in production and trigger retraining if necessary.
+### 1.1 Project Scope and Objectives
 
-## Prerequisites
+#### Project Overview
+This project aims to develop a stock model prediction system that leverages Machine Learning (ML) to accurately predict stock prices. The core of this project is built on Python and utilizes ML models to analyze historical stock data and predict future trends. This project is enhanced with a complete MLOps solution for development, deployment, and monitoring of the ML models.
 
-To run this project, you'll need:
-- Python 3.8+
-- pip (Python package manager)
+#### Scope
+* **Data Processing**: Automated scripts to fetch, clean, and prepare historical stock data for training.
+* **Model Training**: Implementation of multiple ML models to evaluate their performance on stock price prediction.
+* **Model Evaluation**: Rigorous testing and validation strategies to ensure the accuracy and reliability of the models.
+* **Model Deployment**: Automated deployment of the best-performing model to a production environment.
+* **Continuous Integration and Continuous Deployment (CI/CD)**: CI/CD pipelines to automate the testing and deployment processes.
+* **Monitoring**: Tools to monitor the model's performance in production and trigger retraining if necessary.
 
-## Environment Setup
-
-Follow these steps to set up your environment and run the project:
-
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/odmoon/mlops-stock-price-prediction.git
-cd mlops-stock-price-prediction
-```
-### 2. Create and activate a Virtual Environment
-* Unix or MacOS:
-```bash
-python3 -m venv venv
-source venv/bin/activate
-```
-* Windows:
-```bash
-python3 -m venv venv
-.\venv\Scripts\activate
-```
-### 3. Install dependencies
-```bash
-pip install -r requirements.txt
-```
-or manually install following:
-```bash
-pip install pandas numpy matplotlib scikit-learn tensorflow torch hydra-core wandb rich
-```
-### 4. Running the code
-```bash
-python src/models/ABBV_StockPrediction1.py
-```
-### 5. Docker Instructions
-- Download and Install docker from (https://docs.docker.com/get-docker/)
-
-```bash
-### Building the Docker Image
-docker build -t mlops-stock-price-prediction .
-```
-```bash
-### Running the Docker Container
-docker run -it --rm mlops-stock-price-prediction
-```
-```bash
-### Manually pushing  Docker Image to DockerHub
-docker push DOCKER_HUB_USERNAME/DOCKER_HUB_REPO_NAME:tagname
-```
-
-### 6. Weights and Biases (wandb) Integration
-This project uses Weights and Biases for experiment tracking and model evaluation. You can view the experiment results and logs on the wandb project page.
-
-1. Ensure you have a wandb account. You can sign up on the wandb.ai webpage.
-2. Log in to wandb from your terminal:
-
-```bash
-### Copy your wandb API token and paste after the command below
-wandb login
-```
-3. After running the model training script, the metrics, including loss and RMSE scores, are logged to wandb.
-Note: Pass your WandB API token as environment variable in DockerFile if the model runs on container
-
-### Shared wandb Report:
-* https://api.wandb.ai/links/odmoon/bk64h1b3
-* In case WandB trial ends. Sample report has been saved to /reports directory
-
-
-### 7. Logging
-The project uses Python's built-in logging module configured with rich for enhanced log formatting. The logging configuration is defined in src/models/logging/config.py. The logging configuration includes handlers for console output, info logs, and error logs.
-Logs are stored in src/logs directory.
-
-### 8. Hydra configuration
-
-Configuration files for Hydra stored in the conf directory at the root of the project. Config YAML file defines parameters for different aspects of the model, such as dataset paths, model architecture, training parameters. The output log is stored in outputs folder in root directory.
-Hydra allows you to override any configuration parameter from the command line. For example, to change the learning rate and the number of epochs, you can run:
-
-```bash
-python3 src/models/ABBV_StockPrediction1.py model.parameters.learning_rate=0.001 model.parameters.epochs=50
-```
-
-Project Organization
-------------
-    ├── conf
-    │   └── config.yaml    <- Hydra config file for parameter configuration management
-    ├── LICENSE
-    ├── Makefile           <- Makefile with commands like `make data` or `make train` /future task/
-    ├── README.md          <- The top-level README for developers using this project.
-    ├── data /will be used in future, for now static csv file is loaded from src/data/stock_data
-    │   ├── processed      <- The final, canonical data sets for modeling.
-    │   └── raw            <- The original, immutable data dump.
-    │
-    ├── models             <- Trained and serialized models, model predictions, or model summaries
-    │
-    ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
-    │                         the creator's initials, and a short `-` delimited description, e.g.
-    │                         `1.0-jqp-initial-data-exploration`.
-    │
-    ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
-    │   └── figures        <- Generated graphics and figures to be used in reporting
-    │
-    ├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
-    │                         generated with `pip freeze > requirements.txt`
-    │
-    ├── setup.py           <- makes project pip installable (pip install -e .) so src can be imported
-    ├── src                <- Source code for use in this project.
-    │   ├── __init__.py    <- Makes src a Python module
-    │   │
-    │   ├── data           <- Scripts to download or generate data
-    │   │   └── stock_data
-    │   │
-    │   ├── models         <- Scripts to train models and then use trained models to make
-    │   │   │                 predictions
-    │   │   └── ABBV_StockPrediction1.py
-    │   └──
-    └──
-
-
---------
-
-## 1.2 Selection of Data and 1.4 Open-Source Tools
-
-The dataset we chose is from Kaggle, here is the link:
-https://www.kaggle.com/datasets/svaningelgem/nyse-100-daily-stock-prices
+### 1.2 Selection of Data and Open-Source Tools
+The dataset chosen is from Kaggle: [NY Stock Exchange (NYSE) 100 Daily Stock Prices](https://www.kaggle.com/datasets/svaningelgem/nyse-100-daily-stock-prices). It contains data from the top 100 stocks on the NYSE from January 1962 to May 2024. The dataset includes date, open, high, low, and close prices.
 
 The reason we chose this dataset to approach our objective of developing a model to predict stock prices accurately is it contains data from the Top 100 stocks in the market on the NYSE from January 1962-May 2024. With over 62 years of data, and the simple language involved in the dataset, we knew we could utilize this to develop our model. The dataset itself contains 100 csv files of different stocks, each file containing the date, and OHLC. OHLC refers to open, high, low and close which refers to the price at which transactions are completed, the highest and lowest transaction prices, and the final transaction price.
 
 The preprocessing steps required to make it usable for our project are... (write more)
 
-
-## 1.3 Model Considerations
+### 1.3 Model Considerations
 
 The model architectures that are appropriate for our dataset that we are considering are LSTM (long short-term memory), ARIMA, and RNN (recurrent neural networks). This is because stock predictions require time-series prediction models... (Write more once decided which model)
 
@@ -177,11 +70,169 @@ Here are the steps that we followed in relation to our data set.
     14. The date information is indexed
     15. The Model is plotted.
 
-# Profiling Documentation
+### 1.4 Open-Source Tools
+The project utilizes various open-source tools for different stages of the ML lifecycle, including:
+* **Python**: Core programming language.
+* **pandas, numpy, matplotlib, scikit-learn, tensorflow, torch**: Data processing and ML libraries.
+* **hydra-core**: Configuration management.
+* **wandb**: Experiment tracking.
+* **rich**: Enhanced logging.
+* **dvc**: Data version control.
+* **cml**: Continuous Machine Learning.
 
-## cProfile Profiling
+## Environment Setup
 
-### How to Run
+### Prerequisites
+* Python 3.8+
+* pip (Python package manager)
+
+### Installation
+
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/odmoon/mlops-stock-price-prediction.git
+   cd mlops-stock-price-prediction
+   ```
+2. **Create and Activate a Virtual Environment**
+* Unix or MacOS:
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+* Windows:
+```bash
+python3 -m venv venv
+.\venv\Scripts\activate
+```
+3. **Install dependencies**
+```bash
+pip install -r requirements.txt
+```
+or manually install following:
+```bash
+pip install pandas numpy matplotlib scikit-learn tensorflow torch hydra-core wandb rich
+```
+## Usage
+
+### Running the code
+```bash
+python src/models/ABBV_StockPrediction1.py
+```
+### Docker Instructions
+- Download and Install docker from (https://docs.docker.com/get-docker/)
+
+```bash
+### Building the Docker Image
+docker build -t mlops-stock-price-prediction .
+```
+```bash
+### Running the Docker Container
+docker run -it --rm mlops-stock-price-prediction
+```
+```bash
+### Manually pushing  Docker Image to DockerHub
+docker push DOCKER_HUB_USERNAME/DOCKER_HUB_REPO_NAME:tagname
+```
+
+### Weights and Biases (wandb) Integration
+This project uses Weights and Biases for experiment tracking and model evaluation. You can view the experiment results and logs on the wandb project page.
+
+1. Ensure you have a wandb account. You can sign up on the wandb.ai webpage.
+2. Log in to wandb from your terminal:
+
+```bash
+### Copy your wandb API token and paste after the command below
+wandb login
+```
+3. After running the model training script, the metrics, including loss and RMSE scores, are logged to wandb.
+Note: Pass your WandB API token as environment variable in DockerFile if the model runs on container
+
+### Shared wandb Report:
+* https://api.wandb.ai/links/odmoon/bk64h1b3
+* In case WandB trial ends. Sample report has been saved to /reports directory
+
+
+### Logging
+The project uses Python's built-in logging module configured with rich for enhanced log formatting. The logging configuration is defined in src/models/logging/config.py. The logging configuration includes handlers for console output, info logs, and error logs.
+Logs are stored in src/logs directory.
+Sample log outputs :
+```bash
+
+INFO 2024-05-28 14:34:55,248 [src.models.logging.config:ABBV_StockPrediction1.py:<module>:24]
+Weights and Biases initialized
+
+INFO 2024-05-28 14:34:55,250 [src.models.logging.config:ABBV_StockPrediction1.py:<module>:31]
+Loading dataset from /Users/odonchimeg/Documents/classproject/mlops-stock-price-prediction/data/stock_data/ABBV.csv
+
+INFO 2024-05-28 14:37:31,877 [src.models.logging.config:ABBV_StockPrediction1.py:<module>:24]
+Weights and Biases initialized
+
+INFO 2024-05-28 14:37:31,879 [src.models.logging.config:ABBV_StockPrediction1.py:<module>:31]
+Loading dataset from /Users/odonchimeg/Documents/classproject/data/stock_data/ABBV.csv
+
+```
+### Hydra configuration
+
+Configuration files for Hydra stored in the conf directory at the root of the project. Config YAML file defines parameters for different aspects of the model, such as dataset paths, model architecture, training parameters. The output log is stored in outputs folder in root directory.
+Hydra allows you to override any configuration parameter from the command line. For example, to change the learning rate and the number of epochs, you can run:
+
+```bash
+python3 src/models/ABBV_StockPrediction1.py model.parameters.learning_rate=0.001 model.parameters.epochs=50
+```
+
+## Project Organization
+------------
+    ├── conf
+    │   └── config.yaml    <- Hydra config file for parameter configuration management
+    ├── LICENSE
+    ├── Makefile           <- Makefile with commands like `make data` or `make train` /future task/
+    ├── README.md          <- The top-level README for developers using this project.
+    ├── data
+    │   ├── processed      <- The final, canonical data sets for modeling.
+    │   └── raw            <- The original, immutable data dump.
+    │
+    ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
+    │                         the creator's initials, and a short `-` delimited description, e.g.
+    │                         `1.0-jqp-initial-data-exploration`.
+    │
+    ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
+    │   └── figures        <- Generated graphics and figures to be used in reporting
+    │
+    ├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
+    │                         generated with `pip freeze > requirements.txt`
+    │
+    ├── setup.py           <- makes project pip installable (pip install -e .) so src can be imported
+    ├── src                <- Source code for use in this project.
+    │   ├── __init__.py    <- Makes src a Python module
+    │   │
+    │   ├── data           <- Scripts to download or generate data
+    │   │   └── stock_data
+    │   │
+    │   ├── logging        <- Logging configurations and setup
+    │   │   └── stock_data
+    │   │
+    │   ├── models         <- Scripts to train models and then use trained models to make
+    │   │   │                 predictions
+    │   │   └── ABBV_StockPrediction1.py
+    │   └──
+    ├── tests               <- Pytest unit tests for model
+    │      └── test_ABBV_StockPrediction1.py
+    │
+    ├── profile_cprofile.py <- Profiling script for python model performance stats
+    │
+    ├── Dockerfile          <- Docker image build file
+    │
+    └──
+
+
+--------
+
+
+## Profiling Documentation
+
+### cProfile Profiling
+
+#### How to Run
 
 1. Run the profiling script:
     ```bash
@@ -190,19 +241,19 @@ Here are the steps that we followed in relation to our data set.
 
 2. The results will be saved to `cprofile_results.txt`.
 
-### Interpreting Results
+#### Interpreting Results
 
 - The results show function call counts and the cumulative time spent in each function.
 - Focus on functions with high cumulative time for optimization.
 
-### Optimizations
+#### Optimizations
 
 - **High time in data loading:** Consider using efficient data structures or libraries.
 - **High time in training:** Optimize the model architecture or use more efficient training loops.
 
-## Torch Profiler
+### Torch Profiler
 
-### How to Run
+#### How to Run
 
 1. Run the profiling script:
     ```bash
@@ -211,7 +262,7 @@ Here are the steps that we followed in relation to our data set.
 
 2. The results will be saved to `./log/torch_profiler`.
 
-### Interpreting Results
+#### Interpreting Results
 
 - Use TensorBoard to visualize the profiling results:
     ```bash
@@ -220,12 +271,12 @@ Here are the steps that we followed in relation to our data set.
 
 - Analyze the timeline, memory usage, and bottlenecks.
 
-### Optimizations
+#### Optimizations
 
 - **High GPU usage:** Optimize batch sizes and model architecture.
 - **Memory bottlenecks:** Use mixed precision training or gradient checkpointing.
 
-## General Tips
+### General Tips
 
 - **Vectorization:** Ensure operations are vectorized and avoid Python loops in favor of NumPy operations.
 - **Parallelism:** Use multi-threading or multi-processing for data loading and preprocessing.
@@ -254,9 +305,9 @@ Workflow File: .github/workflows/cicd.yml
 - GITHUB_TOKEN: GitHub token for CML (automatically provided).
 - GOOGLE_APPLICATION_CREDENTIALS: Google Cloud service account JSON key /as the dvc is stored on remote GCP storage/
 
-2. Every PR or merge on main action will trigger automatically. You can also manually trigger them from the Actions tab in your GitHub repository. Logs and actions for each workflow is stored in Actions tab on your github repo.
+2. Workflow Trigger : Every PR or merge on main action will trigger automatically. You can also manually trigger them from the Actions tab in your GitHub repository. Logs and actions for each workflow is stored in Actions tab on your github repo.
 
-# Pre-commit hooks
+## Pre-commit hooks
 This project uses pre-commit hooks to ensure code quality. Pre-commit hooks are automatically run before each commit to check for issues such as trailing whitespace, proper file endings, and linting with Ruff.
 Instruction step to Setup:
 ```bash
@@ -320,6 +371,10 @@ A lot more practice with technologies such as cProfile, Torch, and Hydra would h
     - Applied Logging into main model along with rich handler and the configurations
     - Integrated WandB experiment tracking and report dashboard with the metrics.
     - Generated plot graphic into /reports directory
+    - Created Github actions with Tests, Ruff, docker image build and CML
+    - Integrated DVC on local machine with the remote GCP storage
+    - Setup pre-commit hooks
+
 
 ## Maheen Khan
     - Added sections 1.2-1.4 to the README.md where the selection of dataset is justified and possible model considerations
