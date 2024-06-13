@@ -16,6 +16,7 @@
   - [Weights and Biases (wandb) Integration](#weights-and-biases-wandb-integration)
   - [Logging](#logging)
   - [Hydra Configuration](#hydra-configuration)
+  - [DVC Setup with Google Cloud Storage](#dvc-setup-with-google-cloud-storage)
 - [Project Organization](#project-organization)
 - [Profiling Documentation](#profiling-documentation)
   - [cProfile Profiling](#cprofile-profiling)
@@ -23,6 +24,7 @@
 - [Model Deployment and CI/CD](#model-deployment-and-cicd)
   - [GitHub Action Workflows](#github-action-workflows)
 - [Pre-commit Hooks](#pre-commit-hooks)
+- [Pytest Documentation](#pytest-documentation)
 - [Report for Findings, Challenges, and Areas for Improvement](#report-for-findings-challenges-and-areas-for-improvement)
 - [Members of Group Project and Roles](#members-of-group-project-and-roles)
 - [Sources Used](#sources-used)
@@ -180,6 +182,40 @@ Hydra allows you to override any configuration parameter from the command line. 
 python3 src/models/ABBV_StockPrediction1.py model.parameters.learning_rate=0.001 model.parameters.epochs=50
 ```
 
+### DVC Setup with Google Cloud Storage
+
+1. Install DVC
+```bash
+pip install dvc dvc-gs
+```
+
+2. Initialize DVC in the Project
+```bash
+dvc init
+```
+3. Set Up Google Cloud Storage as Remote
+```bash
+dvc remote add -d gcsremote gcs://bucket-name/path/to/remote/ #can be obtained from the Storage config from on GCP
+dvc remote modify gcsremote credentialpath path/to/keyfile.json # download this json key file from GCP, by creating a access key
+```
+4. Track Data Files with DVC
+```bash
+dvc add src/data/stock_data/*
+```
+5. Push Data to Remote Storage
+```bash
+dvc push
+```
+6. Pull Data from Remote Storage
+```bash
+dvc pull
+```
+7. Add and Commit Changes to Git
+```bash
+git add .gitignore src/data/stock_data/*.csv.dvc
+git commit -m "Init DVC and add remote storage"
+```
+
 ## Project Organization
 ------------
     ├── conf
@@ -226,7 +262,6 @@ python3 src/models/ABBV_StockPrediction1.py model.parameters.learning_rate=0.001
 
 
 --------
-
 
 ## Profiling Documentation
 
@@ -324,6 +359,21 @@ pre-commit run --all-files
 ```
 The pre-commit configuration is defined in the .pre-commit-config.yaml file.
 ![Pre-commit sample output](reports/Pre-commit_sample_output.png)
+
+## Pytest Documentation
+
+Project is using Pytest for unit python unit testing and configuration is defined to test the main functionality of the stock price prediction model. Including data reading, running the main function with the mock configs.
+
+### Prerequisites
+Ensure that pytest is installed in your virtual environment:
+```bash
+pip install pytest
+```
+### Running Tests
+To run the tests, use the following command in the root directory of the project:
+```bash
+pytest
+```
 
 ## Report for findings, challenges, and areas for improvement
 
